@@ -22,7 +22,7 @@ public class DatabaseManager extends Thread{
     public final static String ACTION_NEWS_UNIT_DATA_READY = "newsUnit data ready";
 
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static DatabaseReference databaseReference = database.getReference().child("news");
+    private static DatabaseReference databaseReference = database.getReference().child("news");;
 
     private final ListenableString dateListenableString = new ListenableString("");
     private final ListenableString headListenableString = new ListenableString("");
@@ -33,13 +33,6 @@ public class DatabaseManager extends Thread{
     private int count = 0;
 
     private NewsUnit newsUnit;
-
-
-//    public DatabaseManager()
-//    {
-//        database.setPersistenceEnabled(true);
-//    }
-
 
 
     public static ArrayList<NewsDateFormat> getNewsDatesListFromCloud()
@@ -75,17 +68,6 @@ public class DatabaseManager extends Thread{
     {
         this.newsUnit = newsUnit;
         setListeners(newsUnit.newsDate);
-
-
-//         Log.d("DatabaseManager",
-//                 Thread.currentThread().getName() + ": " + dateListenableString.getString());
-//         Log.d("DatabaseManager",
-//                 Thread.currentThread().getName() + ": " + headListenableString.getString());
-//         Log.d("DatabaseManager",
-//                 Thread.currentThread().getName() + ": " + bodyListenableString.getString());
-//         Log.d("DatabaseManager",
-//                 Thread.currentThread().getName() + ": " + internalBodyListenableString.getString());
-
     }
 
 
@@ -169,11 +151,11 @@ public class DatabaseManager extends Thread{
 
     private void setInternalBodyListener(String newsDate)
     {
-        databaseReference.child(newsDate).child("newsDate").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(newsDate).child("internalBody").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 internalBodyListenableString.setString(dataSnapshot.getValue(String.class));
-                Log.d("DatabaseManager", "internalBody got");
+                Log.d("DatabaseManager", "internalBody got" + dataSnapshot.getValue(String.class));
             }
 
             @Override

@@ -50,9 +50,8 @@
             </intent-filter>
         </receiver>
 
-
-
-        <activity android:name=".activity.PhoneEnterActivity"></activity>
+        <activity android:name=".activity.PhoneEnterActivity" />
+        <activity android:name=".activity.NewsPageActivity"></activity>
     </application>
 
 </manifest>

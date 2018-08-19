@@ -19,7 +19,7 @@ public class RegisterDataFilter {
 
     public static boolean checkEmail(AppCompatActivity activity, String email)
     {
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&'*+\\-/=?^`{|}~]{3,}@[a-zA-Z0-9_]+\\.[a-z0-9_]+$");
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&'*+\\-/=?^`{|}~.]{3,}@[a-zA-Z0-9_]+\\.[a-z0-9_]+$");
         Matcher matcher = pattern.matcher(email);
         if(!matcher.matches())
         {

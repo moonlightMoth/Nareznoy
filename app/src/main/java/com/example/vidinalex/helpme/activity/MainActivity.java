@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.example.vidinalex.helpme.managers.PermissionManager;
 import com.example.vidinalex.helpme.toolbar.LeftSideToolbarInitializator;
 import com.example.vidinalex.helpme.uifragments.NewsUnitAdapter;
 import com.example.vidinalex.helpme.utils.GlobalVars;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.io.File;
@@ -29,10 +31,39 @@ public class MainActivity extends AppCompatActivity {
     private Drawer.Result drawerResult = null;
     private String ACTION_ARRAY_LIST_READY = "asReady";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        init();
+
+    }
+
+    private void init() {
+        try{
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            FirebaseDatabase.getInstance().getReference().keepSynced(true);
+        }catch (Exception e)
+        {
+            Log.d("MainActivity", "FirebaseDatabase.getInstance().setPersistenceEnabled(true);");
+        }
+
+        final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateNews();
+                BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                };
+                registerReceiver(broadcastReceiver, new IntentFilter(NewsUnitAdapter.ACTION_NEWS_REFRESHED));
+            }
+        });
 
         PermissionManager.checkPermissionsAndRequest(this, PermissionManager.DEFAULT_PERMISSION_PACK);
 
@@ -43,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         updateNews();
 
         drawerResult = LeftSideToolbarInitializator.initNewToolbar(this);
-
     }
 
     @Override
@@ -58,10 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateNews()
     {
-        DatabaseManager databaseManager = new DatabaseManager();
         final ArrayList<NewsDateFormat> as = FileManager.getCachedNewsDatesList();
-        final ArrayList<NewsDateFormat> as2 = databaseManager.getNewsDatesListFromCloud();
-        databaseManager = null;
+        final ArrayList<NewsDateFormat> as2 = DatabaseManager.getNewsDatesListFromCloud();
 
         registerReceiver(new BroadcastReceiver() {
             @Override

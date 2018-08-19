@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.vidinalex.helpme.R;
+import com.example.vidinalex.helpme.activity.NewsPageActivity;
 import com.example.vidinalex.helpme.datatypes.NewsDateFormat;
 import com.example.vidinalex.helpme.managers.DatabaseManager;
 import com.example.vidinalex.helpme.managers.PermissionManager;
@@ -34,59 +36,80 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
 
     private List<NewsDateFormat> list;
     private StorageReference storageRef;
+    public static String ACTION_NEWS_REFRESHED = "newsRefreshed";
 
     public NewsUnitAdapter(List<NewsDateFormat> list)
     {
         super();
-        if (list == null) {
+        if (list == null || list.size()==0) {
             throw new IllegalArgumentException(
                     "list must not be null");
         }
-        this.list = list;
+        else {
+            this.list = list;
+        }
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull final ListItemViewHolder holder, int position) {
         NewsDateFormat newsDateFormat = list.get(position);
         final NewsUnit newsUnit = new NewsUnit(newsDateFormat.getDate());
 
+        rendNewsRefreshedIntent();
 
 
         if(newsDateFormat.getLoadFrom() == NewsUnit.POST_LOAD_FROM_CLOUD)
         {
             new DatabaseManager().assembleNewsUnit(newsUnit);
+
             GlobalVars.getContext().registerReceiver(new BroadcastReceiver() {
                 @Override
-                public void onReceive(Context context, Intent intent) {
+                public void onReceive(Context context, final Intent intent) {
                     putNewsUnitToHolder(holder,newsUnit);
                     storageRef = FirebaseStorage.getInstance().getReference().
                             child("newsImages/" + newsUnit.imagesArrayList.get(0));
                     GlobalVars.getContext().unregisterReceiver(this);
+
+                    holder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(GlobalVars.getContext(), NewsPageActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("head", newsUnit.head);
+                            bundle.putString("internalBody", newsUnit.internalBody);
+                            bundle.putString("date", newsUnit.date);
+                            bundle.putStringArrayList("imagesArrayList", newsUnit.imagesArrayList);
+                            i.putExtras(bundle);
+                            GlobalVars.getContext().startActivity(i);
+                        }
+                    });
+
+                    if(PermissionManager.checkReadAndWritePermission()) {
+//                saveFile(Uri.fromFile(new File(getPreviewImagePath(newsUnit))).toString()+".png");
+//                Log.d("NewsUnitAdapter", Thread.currentThread().getName() + ": saved file " + getPreviewImagePath(newsUnit));
+//                Log.d("NewsUnitAdapter", Thread.currentThread().getName() + ": loading file " + Uri.fromFile(new File(getPreviewImagePath(newsUnit))));
+//                holder.imageView.setImageURI(Uri.fromFile(new File(getPreviewImagePath(newsUnit)+".png")));
+                        Glide.with(GlobalVars.getContext())
+                                .using(new FirebaseImageLoader())
+                                .load(storageRef)
+                                .into(holder.imageView);
+
+                    }
+                    else
+                    {
+                        Glide.with(GlobalVars.getContext())
+                                .using(new FirebaseImageLoader())
+                                .load(storageRef)
+                                .into(holder.imageView);
+                        Log.d("Image", "No permission to write");
+                    }
+
                 }
             }, new IntentFilter(DatabaseManager.ACTION_NEWS_UNIT_DATA_READY + " "
                     + newsDateFormat.getDate()));
 
             //TODO закэшировать
-
-            if(PermissionManager.checkReadAndWritePermission()) {
-//                saveFile(Uri.fromFile(new File(getPreviewImagePath(newsUnit))).toString()+".png");
-//                Log.d("NewsUnitAdapter", Thread.currentThread().getName() + ": saved file " + getPreviewImagePath(newsUnit));
-//                Log.d("NewsUnitAdapter", Thread.currentThread().getName() + ": loading file " + Uri.fromFile(new File(getPreviewImagePath(newsUnit))));
-//                holder.imageView.setImageURI(Uri.fromFile(new File(getPreviewImagePath(newsUnit)+".png")));
-                Glide.with(GlobalVars.getContext())
-                        .using(new FirebaseImageLoader())
-                        .load(storageRef)
-                        .into(holder.imageView);
-
-            }
-            else
-            {
-                Glide.with(GlobalVars.getContext())
-                        .using(new FirebaseImageLoader())
-                        .load(storageRef)
-                        .into(holder.imageView);
-                Log.d("Image", "No permission to write");
-            }
         }
         else
         {
@@ -97,6 +120,11 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
         }
 
 
+    }
+
+    private void rendNewsRefreshedIntent() {
+        Intent intent = new Intent(ACTION_NEWS_REFRESHED);
+        GlobalVars.getContext().sendBroadcast(intent);
     }
 
 
@@ -137,15 +165,22 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
         TextView date;
         TextView head;
         TextView body;
+        View item;
 
-        public ListItemViewHolder(View item)
+        ListItemViewHolder(View item)
         {
             super(item);
+            this.item = item;
             imageView = item.findViewById(R.id.image);
             date = item.findViewById(R.id.date);
             head = item.findViewById(R.id.head);
             body = item.findViewById(R.id.body);
 
+        }
+
+        void setOnClickListener(View.OnClickListener listener)
+        {
+            item.setOnClickListener(listener);
         }
     }
 

@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="30dp"
-        android:textColor="@android:color/darker_gray">
+        android:textColor="@color/text_color">
 
         <EditText
             android:layout_marginTop="50dp"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:textSize="30sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/text_color"
             android:inputType="textPassword" />
 
 
@@ -59,7 +59,7 @@
             android:textSize="17sp"
             android:text="или через:"
             android:gravity="center_horizontal"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textColor="@color/text_color"/>
 
         <LinearLayout
             android:layout_marginTop="5dp"

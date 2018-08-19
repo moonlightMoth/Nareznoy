@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="30dp"
-        android:textColor="@android:color/darker_gray">
+        android:textColor="@color/text_color">
 
         <EditText
             android:layout_marginTop="50dp"
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             android:textSize="20sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/text_color"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:textSize="20sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/text_color"
             android:inputType="textPassword" />
 
         <EditText
