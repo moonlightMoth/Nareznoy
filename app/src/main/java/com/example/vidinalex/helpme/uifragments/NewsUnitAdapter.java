@@ -19,13 +19,11 @@ import com.bumptech.glide.Glide;
 import com.example.vidinalex.helpme.R;
 import com.example.vidinalex.helpme.activity.NewsPageActivity;
 import com.example.vidinalex.helpme.datatypes.NewsDateFormat;
+import com.example.vidinalex.helpme.datatypes.NewsUnit;
 import com.example.vidinalex.helpme.managers.DatabaseManager;
 import com.example.vidinalex.helpme.managers.PermissionManager;
 import com.example.vidinalex.helpme.utils.GlobalVars;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -86,14 +84,13 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
                     });
 
                     if(PermissionManager.checkReadAndWritePermission()) {
-//                saveFile(Uri.fromFile(new File(getPreviewImagePath(newsUnit))).toString()+".png");
-//                Log.d("NewsUnitAdapter", Thread.currentThread().getName() + ": saved file " + getPreviewImagePath(newsUnit));
-//                Log.d("NewsUnitAdapter", Thread.currentThread().getName() + ": loading file " + Uri.fromFile(new File(getPreviewImagePath(newsUnit))));
-//                holder.imageView.setImageURI(Uri.fromFile(new File(getPreviewImagePath(newsUnit)+".png")));
+
                         Glide.with(GlobalVars.getContext())
                                 .using(new FirebaseImageLoader())
                                 .load(storageRef)
                                 .into(holder.imageView);
+
+
 
                     }
                     else
@@ -183,24 +180,4 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
             item.setOnClickListener(listener);
         }
     }
-
-//TODO допилить сейв файлов
-    private void saveFile(String path)
-    {
-        final File file = new File(path);
-
-        storageRef.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d("File saved", file.getAbsolutePath());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Log.d("File Failed","");
-            }
-        });
-    }
-
 }

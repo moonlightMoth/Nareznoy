@@ -1,4 +1,4 @@
-package com.example.vidinalex.helpme.uifragments;
+package com.example.vidinalex.helpme.datatypes;
 
 import java.util.ArrayList;
 

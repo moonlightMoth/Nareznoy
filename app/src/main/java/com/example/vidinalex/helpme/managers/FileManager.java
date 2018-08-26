@@ -1,7 +1,7 @@
 package com.example.vidinalex.helpme.managers;
 
 import com.example.vidinalex.helpme.datatypes.NewsDateFormat;
-import com.example.vidinalex.helpme.uifragments.NewsUnit;
+import com.example.vidinalex.helpme.datatypes.NewsUnit;
 import com.example.vidinalex.helpme.utils.GlobalVars;
 
 import java.io.BufferedReader;

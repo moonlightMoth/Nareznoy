@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.example.vidinalex.helpme.datatypes.ListenableString;
 import com.example.vidinalex.helpme.datatypes.NewsDateFormat;
-import com.example.vidinalex.helpme.uifragments.NewsUnit;
+import com.example.vidinalex.helpme.datatypes.NewsUnit;
 import com.example.vidinalex.helpme.utils.GlobalVars;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
