@@ -36,7 +36,9 @@
         <activity android:name=".activity.PhoneLoginActivity" />
         <activity
             android:name=".uifragments.PhoneVerificationActivityDialog"
+            android:label=""
             android:theme="@style/Theme.AppCompat.Dialog" />
+
         <activity android:name=".activity.NoInternetActivity" />
 
         <receiver android:name=".utils.PhoneLinker">

@@ -17,7 +17,7 @@ import com.example.vidinalex.helpme.managers.DatabaseManager;
 import com.example.vidinalex.helpme.managers.FileManager;
 import com.example.vidinalex.helpme.managers.PermissionManager;
 import com.example.vidinalex.helpme.toolbar.LeftSideToolbarInitializator;
-import com.example.vidinalex.helpme.uifragments.NewsUnitAdapter;
+import com.example.vidinalex.helpme.uifragments.NewsUnitRecyclerAdapter;
 import com.example.vidinalex.helpme.utils.GlobalVars;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mikepenz.materialdrawer.Drawer;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 };
-                registerReceiver(broadcastReceiver, new IntentFilter(NewsUnitAdapter.ACTION_NEWS_REFRESHED));
+                registerReceiver(broadcastReceiver, new IntentFilter(NewsUnitRecyclerAdapter.ACTION_NEWS_REFRESHED));
             }
         });
 
@@ -140,13 +140,16 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView feedLayout = findViewById(R.id.list);
 
+        feedLayout.setBackgroundResource(R.drawable.phone_login_icon);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
 
         feedLayout.setLayoutManager(layoutManager);
 
-        feedLayout.setAdapter(new NewsUnitAdapter(arrayList));
+        feedLayout.setAdapter(new NewsUnitRecyclerAdapter(arrayList));
+
     }
 
 

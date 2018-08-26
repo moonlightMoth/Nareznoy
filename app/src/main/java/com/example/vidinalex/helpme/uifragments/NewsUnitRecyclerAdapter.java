@@ -30,13 +30,13 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.util.List;
 
-public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListItemViewHolder> {
+public class NewsUnitRecyclerAdapter extends RecyclerView.Adapter<NewsUnitRecyclerAdapter.ListItemViewHolder> {
 
     private List<NewsDateFormat> list;
     private StorageReference storageRef;
     public static String ACTION_NEWS_REFRESHED = "newsRefreshed";
 
-    public NewsUnitAdapter(List<NewsDateFormat> list)
+    public NewsUnitRecyclerAdapter(List<NewsDateFormat> list)
     {
         super();
         if (list == null || list.size()==0) {
@@ -56,7 +56,7 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
 
         rendNewsRefreshedIntent();
 
-
+        //TODO clean code
         if(newsDateFormat.getLoadFrom() == NewsUnit.POST_LOAD_FROM_CLOUD)
         {
             new DatabaseManager().assembleNewsUnit(newsUnit);
@@ -89,8 +89,6 @@ public class NewsUnitAdapter extends RecyclerView.Adapter<NewsUnitAdapter.ListIt
                                 .using(new FirebaseImageLoader())
                                 .load(storageRef)
                                 .into(holder.imageView);
-
-
 
                     }
                     else

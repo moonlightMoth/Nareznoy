@@ -5,6 +5,7 @@
     android:layout_height="140dp"
     android:orientation="horizontal"
     android:background="#EDEDED"
+    android:elevation="10dp"
     android:layout_margin="10dp">
 
     <ImageView

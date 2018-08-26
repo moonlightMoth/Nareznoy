@@ -6,14 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Toolbar;
 
-import com.example.vidinalex.helpme.utils.GlobalVars;
-import com.example.vidinalex.helpme.utils.InternetChecker;
-import com.example.vidinalex.helpme.toolbar.LeftSideToolbarInitializator;
-import com.example.vidinalex.helpme.managers.PermissionManager;
-import com.example.vidinalex.helpme.utils.QrCodeGenerator;
 import com.example.vidinalex.helpme.R;
+import com.example.vidinalex.helpme.managers.PermissionManager;
+import com.example.vidinalex.helpme.toolbar.LeftSideToolbarInitializator;
+import com.example.vidinalex.helpme.utils.InternetChecker;
+import com.example.vidinalex.helpme.utils.QrCodeGenerator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,8 +39,6 @@ public class ProfileActivity extends AppCompatActivity{
         firebaseAuth = FirebaseAuth.getInstance();
 
         drawerResult = LeftSideToolbarInitializator.initNewToolbar(this);
-
-        Toast.makeText(this, GlobalVars.getFileSavingPath(), Toast.LENGTH_LONG).show();
 
         setQrCodeImage();
 
@@ -89,38 +86,37 @@ public class ProfileActivity extends AppCompatActivity{
         final TextView gmail = findViewById(R.id.gmail);
         final TextView points = findViewById(R.id.points);
 
+        DatabaseReference userDatabaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getCurrentUser().getUid());
+
+        userDatabaseReference.child("gmail").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gmail.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        userDatabaseReference.child("points").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                points.setText(dataSnapshot.getValue().toString() + " pts");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         if(InternetChecker.checkInternet(this))
         {
-            DatabaseReference userDatabaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getCurrentUser().getUid());
-
-            userDatabaseReference.child("gmail").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    gmail.setText(dataSnapshot.getValue().toString());
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            userDatabaseReference.child("points").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    points.setText(dataSnapshot.getValue().toString() + " pts");
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-        else
-        {
-            points.setText("QR-код последнего пользователя");
-            gmail.setText("НЕТ ИНТЕРНЕТА");
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setTitle("No Internet");
         }
     }
 
